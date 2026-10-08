@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');const {destination}=require('./redirect.js');
+const old='https://haloshin.github.io/amazon-seller-university-transcripts';
+const base='https://haloshin.github.io/seller-university/';
+assert.equal(destination(old+'/?v=0.6.3#view=course&id=abc&lang=zh_CN&ui=zh'),base+'?v=0.6.3#view=course&id=abc&lang=zh_CN&ui=zh');
+assert.equal(destination(old),base);
+assert.equal(destination(old+'/index.html#topic=ads'),base+'#topic=ads');
+assert.equal(destination(old+'/courses/472d8e74-3402-4871-88d2-0ebaeb3263eb/zh_CN/transcript.txt'),base+'amazon/courses/472d8e74-3402-4871-88d2-0ebaeb3263eb/zh_CN/transcript.txt');
+assert.equal(destination(old+'/'+encodeURI('学习导航.md')),base+'amazon/'+encodeURI('学习导航.md'));
+for(const path of ['/other/','/amazon-seller-university-transcripts-evil/','/amazon-seller-university-transcripts/https://evil.example','/amazon-seller-university-transcripts/../other/']) assert.equal(destination('https://haloshin.github.io'+path),null);
+assert.ok(destination(old+'/?redirect=https://evil.example').startsWith(base));
+console.log('PASS: fixed destination, preserved reader parameters, allowed file routes, unknown route isolation');
